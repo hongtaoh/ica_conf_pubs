@@ -1,0 +1,147 @@
+from os.path import join as pjoin
+import sys
+
+DATA_DIR = "../data/"
+FASTAPI_DIR = '../fastapi'
+RAW_DATA_DIR = pjoin(DATA_DIR, "raw")
+INTERIM_DATA_DIR = pjoin(DATA_DIR, "interim")
+PROCESSED_DATA_DIR = pjoin(DATA_DIR, "processed")
+API_DATA_DIR = pjoin(DATA_DIR, 'api')
+
+###############################################################################
+# Raw Data
+###############################################################################
+
+
+###############################################################################
+# Interim outputs
+###############################################################################
+
+PAPER_2003_2004 = pjoin(INTERIM_DATA_DIR, "paper_df_2003_2004.csv")
+AUTHOR_2003_2004 = pjoin(INTERIM_DATA_DIR, "author_df_2003_2004.csv")
+PAPER_2005_2013 = pjoin(INTERIM_DATA_DIR, "paper_df_2005_2013.csv")
+AUTHOR_2005_2013 = pjoin(INTERIM_DATA_DIR, "author_df_2005_2013.csv")
+SESSION_2014_2018 = pjoin(INTERIM_DATA_DIR, 'session_df_2014_2018.csv')
+AUTHOR_2014_2018 = pjoin(INTERIM_DATA_DIR, 'author_df_2014_2018.csv')
+PAPER_2014_2018 = pjoin(INTERIM_DATA_DIR, 'paper_df_2014_2018.csv')
+INTERACTIVE_SESSION_2014_2018 = pjoin(INTERIM_DATA_DIR, 'interactive_session_df_2014_2018.csv')
+INTERACTIVE_AUTHOR_2014_2018 = pjoin(INTERIM_DATA_DIR, 'interactive_author_df_2014_2018.csv')
+INTERACTIVE_PAPER_2014_2018 = pjoin(INTERIM_DATA_DIR, 'interactive_paper_df_2014_2018.csv')
+
+
+###############################################################################
+# Processed outputs
+###############################################################################
+PAPERS_DF = pjoin(PROCESSED_DATA_DIR, 'papers.csv')
+AUTHORS_DF = pjoin(PROCESSED_DATA_DIR, 'authors.csv')
+SESSIONS_DF = pjoin(PROCESSED_DATA_DIR, 'sessions.csv')
+
+
+###############################################################################
+# API outputs
+###############################################################################
+
+PAPERS_JSON = pjoin(API_DATA_DIR, 'papers.json')
+AUTHORS_JSON = pjoin(API_DATA_DIR, 'authors.json')
+SESSIONS_JSON = pjoin(API_DATA_DIR, 'sessions.json')
+INDEXED_PAPERS_JSON = pjoin(API_DATA_DIR, 'indexed_papers.json')
+SESSIONID_PAPERS_JSON = pjoin(API_DATA_DIR, 'sessionid_papers.json')
+AUTHOR_PAPER_IDS_JSON = pjoin(API_DATA_DIR, 'author_paper_ids.json')
+PAPER_EMBEDDINGS_JSON = pjoin(API_DATA_DIR, 'paper_embeddings.json')
+
+
+###############################################################################
+# FASTAPI outputs
+###############################################################################
+PCA_MODEL = pjoin(FASTAPI_DIR, 'pca_model.pkl')
+
+###############################################################################
+# Workflows
+###############################################################################
+
+rule all:
+    input:
+        # PAPER_2003_2004,
+        # AUTHOR_2003_2004,
+        # PAPER_2005_2013,
+        # AUTHOR_2005_2013,
+        # SESSION_2014_2018,
+        # AUTHOR_2014_2018,
+        # PAPER_2014_2018,
+        # INTERACTIVE_SESSION_2014_2018,
+        # INTERACTIVE_AUTHOR_2014_2018,
+        # INTERACTIVE_PAPER_2014_2018,
+        # PAPERS_DF,
+        # AUTHORS_DF,
+        # SESSIONS_DF,
+        # PAPERS_JSON,
+        # AUTHORS_JSON,
+        # SESSIONS_JSON,
+        # INDEXED_PAPERS_JSON,
+        # SESSIONID_PAPERS_JSON,  
+        # AUTHOR_PAPER_IDS_JSON,   
+        PAPER_EMBEDDINGS_JSON,
+        PCA_MODEL,
+
+# rule scrape_03_04:
+#     output: 
+#         PAPER_2003_2004,
+#         AUTHOR_2003_2004,
+#     shell: "python scripts/scrape_2003_2004.py {output}"
+
+# rule scrape_2005_2013:
+#     output: 
+#         PAPER_2005_2013,
+#         AUTHOR_2005_2013,
+#     shell: "python scripts/scrape_2005_2013.py {output}"
+
+# rule scrape_2014_onward_paper:
+#     output: 
+#         SESSION_2014_2018,
+#         AUTHOR_2014_2018,
+#         PAPER_2014_2018,
+#     shell: "python scripts/scrape_2014_onward_paper.py {output}"
+
+# rule scrape_2014_onward_interactive_paper:
+#     output: 
+#         INTERACTIVE_SESSION_2014_2018,
+#         INTERACTIVE_AUTHOR_2014_2018,
+#         INTERACTIVE_PAPER_2014_2018,
+#     shell: "python scripts/scrape_2014_onward_interactive_paper.py {output}"
+
+# rule combine_all_data:
+#     input:
+#         PAPER_2003_2004,
+#         PAPER_2005_2013,
+#         PAPER_2014_2018,
+#         INTERACTIVE_PAPER_2014_2018,
+#         AUTHOR_2003_2004,
+#         AUTHOR_2005_2013,
+#         AUTHOR_2014_2018,
+#         INTERACTIVE_AUTHOR_2014_2018,
+#         SESSION_2014_2018,
+#         INTERACTIVE_SESSION_2014_2018
+#     output: 
+#         PAPERS_DF,
+#         AUTHORS_DF,
+#         SESSIONS_DF,
+#     shell: "python scripts/combine_all_data.py {input} {output}"
+
+# rule generate_json_and_aggreated_data:
+#     input:
+#         PAPERS_DF,
+#         AUTHORS_DF,
+#         SESSIONS_DF,
+#     output: 
+#         PAPERS_JSON,
+#         AUTHORS_JSON,
+#         SESSIONS_JSON,
+#         INDEXED_PAPERS_JSON,
+#         SESSIONID_PAPERS_JSON,
+#         AUTHOR_PAPER_IDS_JSON,
+#     shell: "python scripts/generate_json_and_aggreated_data.py {input} {output}"
+
+rule get_paper_embeddings:
+    input: PAPERS_JSON
+    output: PAPER_EMBEDDINGS_JSON, PCA_MODEL
+    shell: "python scripts/get_paper_embeddings.py {input} {output}"
