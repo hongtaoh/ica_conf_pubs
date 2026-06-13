@@ -109,6 +109,10 @@ I used snakemake to manage the workflow. Details are in `Snakefile`.
 
 - `combine_all_data.py` cleaned, organized, and concatenated data. 
 
-## Paper Embedding
+## Paper Embedding for Semantic Search
 
 See the folder of `paper_embedding`. 
+
+## Topic Moeeling 
+
+See `topic_modeling.py`. 
